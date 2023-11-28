@@ -1,7 +1,8 @@
 package com.pruebaspring.prueba.controllers;
 
+import com.pruebaspring.prueba.model.Respuesta;
 import com.pruebaspring.prueba.model.Usuario;
-import com.pruebaspring.prueba.repository.UsuarioRepository;
+import com.pruebaspring.prueba.services.RespuestaService;
 import com.pruebaspring.prueba.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +20,16 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
-
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private RespuestaService respuestaService;
+
 
 
     @PostMapping(value = "/crearUsuario")
-    public Usuario crearUsuario(@RequestBody Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    public Respuesta crearUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioCreado = usuarioService.save(usuario);
+        Respuesta respuesta = respuestaService.respuesta(usuarioCreado);
+        return respuesta;
     }
 
     @GetMapping(value = "/usuarios")
@@ -34,9 +37,10 @@ public class UsuarioController {
         return usuarioService.buscarUsuarios();
     }
 
-    @GetMapping(value = "/eliminarUsuarios/{id}")
+    @RequestMapping(value = "/eliminarUsuarios/{id}")
     public void eliminar(@PathVariable Long id){
         usuarioService.EliminarUsuario(id);
     }
+
 
 }
