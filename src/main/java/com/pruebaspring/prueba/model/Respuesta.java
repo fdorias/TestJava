@@ -17,6 +17,7 @@ public class Respuesta {
     private String ultimoLogin;
     private String token;
     private String activo;
+    private Boolean sesion;
 
 
     public Respuesta() {
@@ -69,5 +70,13 @@ public class Respuesta {
 
     public void setActivo(String activo) {
         this.activo = activo;
+    }
+
+    public Boolean getSesion() {
+        return sesion;
+    }
+
+    public void setSesion(Boolean sesion) {
+        this.sesion = sesion;
     }
 }

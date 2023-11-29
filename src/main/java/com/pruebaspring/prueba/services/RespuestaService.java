@@ -5,4 +5,6 @@ import com.pruebaspring.prueba.model.Usuario;
 
 public interface RespuestaService {
     Respuesta respuesta(Usuario usuarioCreado);
+
+    Respuesta actualizarUsuario(Usuario usuario,Long id);
 }

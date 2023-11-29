@@ -1,5 +1,6 @@
 package com.pruebaspring.prueba.services;
 
+import com.pruebaspring.prueba.exception.UsuarioException;
 import com.pruebaspring.prueba.model.Usuario;
 import com.pruebaspring.prueba.repository.UsuarioRepository;
 import org.slf4j.Logger;
@@ -12,10 +13,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.pruebaspring.prueba.constans.Constantes.MENSAJE;
+
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioServiceImpl.class);
+
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -38,28 +42,32 @@ public class UsuarioServiceImpl implements UsuarioService {
         boolean validacion;
         listUsuario = usuarioRepository.findAll();
         try {
-            if (validarFormatoCorreo(usuario.getCorreo())){
+            if (validarFormatoCorreo(usuario.getEmail())){
                 if (listUsuario.isEmpty()){
-                    usuario1 = usuarioRepository.save(usuario);
+                    return usuario1 = usuarioRepository.save(usuario);
                 }else{
                     validacion = validarUsuario(listUsuario, usuario);
                     if (validacion== false){
-                        usuario1 = usuarioRepository.save(usuario);
+                        return usuario1 = usuarioRepository.save(usuario);
                     }
                 }
+                throw new UsuarioException("Usuario ya se encuentra registrado");
             }else {
-                LOGGER.error("mensaje de error");
+                throw new UsuarioException("Error en formato Email");
             }
-        }catch (Exception e){
-            LOGGER.error("mensaje de error",e.getMessage(),e);
+        } catch (UsuarioException e) {
+            LOGGER.error("Error en la validación del usuario", e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Mensaje de error", e.getMessage(), e);
+            throw new UsuarioException("Error inesperado al procesar el usuario");
         }
-        return usuario1;
     }
 
     public boolean validarUsuario (List<Usuario> listUsuario, Usuario usuario){
         boolean respuesta = false;
         for (Usuario user : listUsuario){
-            if ( user.getCorreo().equals(usuario.getCorreo())){
+            if ( user.getEmail().equals(usuario.getEmail())){
                 respuesta = true;
             }else{
                 respuesta = false;
