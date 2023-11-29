@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class LoginServicesImpl implements LoginService{
@@ -28,39 +30,43 @@ public class LoginServicesImpl implements LoginService{
     @Override
     public Respuesta validarUsuario(Login login) {
         try {
-            Usuario usuario = new Usuario();
-            Respuesta saveRespuesta = new Respuesta();
-            usuario.setEmail(login.getEmail());
-            usuario = loginRepository.findByEmail(login.getEmail());
-            if (usuario!= null){
-                Optional<Respuesta> respuesta = Optional.of(new Respuesta());
-                if (usuario.getContraseña().equals(login.getPassword())){
-                    respuesta = respuestaRepository.findById(usuario.getId());
-                    String token = respuesta.map(Respuesta::getToken).orElse(null);
-                    String activo = validarActivo(token, usuario);
-                    if(activo.equals("Activo")){
-                        Respuesta respuestaExistente = respuesta.get();
-                        respuestaExistente.setId(respuestaExistente.getId());
-                        respuestaExistente.setCreado(respuestaExistente.getCreado());
-                        respuestaExistente.setModificado(respuestaExistente.getModificado());
-                        respuestaExistente.setUltimoLogin(fechaUltimoLogin());
-                        respuestaExistente.setToken(token);
-                        respuestaExistente.setActivo(activo);
-                        if (respuestaExistente.getSesion() == false){
-                            respuestaExistente.setSesion(true);
-                            saveRespuesta = respuestaRepository.save(respuestaExistente);
-                            return saveRespuesta;
+            if (validarFormatoCorreo(login.getEmail())== true){
+                Usuario usuario = new Usuario();
+                Respuesta saveRespuesta = new Respuesta();
+                usuario.setEmail(login.getEmail());
+                usuario = loginRepository.findByEmail(login.getEmail());
+                if (usuario!= null){
+                    Optional<Respuesta> respuesta = Optional.of(new Respuesta());
+                    if (usuario.getContraseña().equals(login.getPassword())){
+                        respuesta = respuestaRepository.findById(usuario.getId());
+                        String token = respuesta.map(Respuesta::getToken).orElse(null);
+                        String activo = validarActivo(token, usuario);
+                        if(activo.equals("Activo")){
+                            Respuesta respuestaExistente = respuesta.get();
+                            respuestaExistente.setId(respuestaExistente.getId());
+                            respuestaExistente.setCreado(respuestaExistente.getCreado());
+                            respuestaExistente.setModificado(respuestaExistente.getModificado());
+                            respuestaExistente.setUltimoLogin(fechaUltimoLogin());
+                            respuestaExistente.setToken(token);
+                            respuestaExistente.setActivo(activo);
+                            if (respuestaExistente.getSesion() == false){
+                                respuestaExistente.setSesion(true);
+                                saveRespuesta = respuestaRepository.save(respuestaExistente);
+                                return saveRespuesta;
+                            }else {
+                                throw new UsuarioException("La sesion ya esta activa");
+                            }
                         }else {
-                            throw new UsuarioException("La sesion ya esta activa");
+                            throw new UsuarioException("El token ya no es valido");
                         }
                     }else {
-                        throw new UsuarioException("El token ya no es valido");
+                        throw new UsuarioException("Contraseña incorrecta");
                     }
                 }else {
-                    throw new UsuarioException("Contraseña incorrecta");
+                    throw new UsuarioException("Usuario no existe");
                 }
-            }else {
-                throw new UsuarioException("Usuario no existe");
+            }else{
+                throw new UsuarioException("Error Formato Correo");
             }
         }catch (UsuarioException e) {
             LOGGER.error("Error en la validación del usuario", e.getMessage(), e);
@@ -74,26 +80,39 @@ public class LoginServicesImpl implements LoginService{
 
     @Override
     public Respuesta logout(Login login) {
-        Usuario usuario = new Usuario();
-        Respuesta saveRespuesta = new Respuesta();
-        usuario.setEmail(login.getEmail());
-        usuario = loginRepository.findByEmail(login.getEmail());
-        Optional<Respuesta> respuesta = Optional.of(new Respuesta());
-        respuesta = respuestaRepository.findById(usuario.getId());
-        String token = respuesta.map(Respuesta::getToken).orElse(null);
-        String activo = validarActivo(token, usuario);
-        if(activo == "Activo"){
-            Respuesta respuestaExistente = respuesta.get();
-            respuestaExistente.setId(respuestaExistente.getId());
-            respuestaExistente.setCreado(respuestaExistente.getCreado());
-            respuestaExistente.setModificado(respuestaExistente.getModificado());
-            respuestaExistente.setUltimoLogin(fechaUltimoLogin());
-            respuestaExistente.setToken(token);
-            respuestaExistente.setActivo(activo);
-            respuestaExistente.setSesion(false);
-            saveRespuesta = respuestaRepository.save(respuestaExistente);
+        try {
+            Usuario usuario = new Usuario();
+            Respuesta saveRespuesta = new Respuesta();
+            usuario.setEmail(login.getEmail());
+            usuario = loginRepository.findByEmail(login.getEmail());
+            Optional<Respuesta> respuesta = Optional.of(new Respuesta());
+            respuesta = respuestaRepository.findById(usuario.getId());
+            Boolean sesion = respuesta.map(Respuesta::getSesion).orElse(null);
+            if (sesion.equals(true)){
+                String token = respuesta.map(Respuesta::getToken).orElse(null);
+                String activo = validarActivo(token, usuario);
+                if(activo == "Activo"){
+                    Respuesta respuestaExistente = respuesta.get();
+                    respuestaExistente.setId(respuestaExistente.getId());
+                    respuestaExistente.setCreado(respuestaExistente.getCreado());
+                    respuestaExistente.setModificado(respuestaExistente.getModificado());
+                    respuestaExistente.setUltimoLogin(fechaUltimoLogin());
+                    respuestaExistente.setToken(token);
+                    respuestaExistente.setActivo(activo);
+                    respuestaExistente.setSesion(false);
+                    saveRespuesta = respuestaRepository.save(respuestaExistente);
+                }
+                return saveRespuesta;
+            }else {
+                throw new UsuarioException("Usuario ya no esta dentro del sistema");
+            }
+        }catch (UsuarioException e) {
+            LOGGER.error("Error en la validación del usuario", e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Mensaje de error", e.getMessage(), e);
+            throw new UsuarioException("Error inesperado al procesar el usuario");
         }
-        return saveRespuesta;
     }
 
     private String fechaUltimoLogin(){
@@ -119,5 +138,14 @@ public class LoginServicesImpl implements LoginService{
             LOGGER.error("Mensaje de error", e.getMessage(), e);
             throw new UsuarioException("El token ya no es valido");
         }
+    }
+
+    private boolean validarFormatoCorreo(String correo) {
+        String formatoCorreo = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        Pattern pattern = Pattern.compile(formatoCorreo);
+        Matcher matcher = pattern.matcher(correo);
+
+        return matcher.matches();
     }
 }
