@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"JuanRodriguez\",\r\n    \"email\": \"juan1@iguez.com\",\r\n    \"contraseña\": \"hunter2\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"nombre\": \"JuanRodriguez\",\r\n    \"email\": \"juan1@iguez.com\",\r\n    \"contraseña\": \"123456\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -31,14 +31,14 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Juan1Rodriguez\",\r\n    \"email\": \"juan@iguez.com\",\r\n    \"contraseña\": \"hunter21\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"nombre\": \"Juan1Rodriguez\",\r\n    \"email\": \"juan1@iguez.com\",\r\n    \"contraseña\": \"hunter21\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "http://localhost:8080/api/usuario/actualizarUsuario/1"
+				"url": "http://localhost:8080/api/usuario/actualizarUsuario/2"
 			},
 			"response": []
 		},
@@ -49,7 +49,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"juan@iguez.com\",\r\n    \"password\": \"hunter2\"\r\n}",
+					"raw": "{\r\n    \"email\": \"juan@iguez.com\",\r\n    \"password\": \"123456\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -88,7 +88,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Juan Rodriguez\",\r\n    \"correo\": \"juan@rodriguez.org\",\r\n    \"contraseña\": \"hunter2\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -106,14 +106,14 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Juan Rodriguez\",\r\n    \"correo\": \"juan@rodriguez.org\",\r\n    \"contraseña\": \"hunter2\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "http://localhost:8080/api/usuario/eliminarUsuarios/3"
+				"url": "http://localhost:8080/api/usuario/eliminarUsuarios/2"
 			},
 			"response": []
 		}
