@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -71,7 +72,7 @@ public class RespuestaServicesImpl implements RespuestaService{
         respuesta = respuestaRepository.findById(usuarioExistente.getId());
         String token = respuesta.map(Respuesta::getToken).orElse(null);
         String activo = validarActivo(token, usuarioExistente);
-        if (activo == "Activo" ){
+        if (activo.equals("Activo")){
             Usuario usuario1 = actualizarDatosUsuario(usuario, usuarioExistente);
             token = jwtUtil.generateToken(usuario1);
             Respuesta respuestaExistente = respuesta.get();
@@ -87,6 +88,7 @@ public class RespuestaServicesImpl implements RespuestaService{
         return saveRespuesta;
     }
 
+
     private Usuario actualizarDatosUsuario(Usuario usuario, Usuario usuarioExistente) {
         Usuario usuarioActualizado = new Usuario();
         usuarioActualizado.setId(usuarioExistente.getId());
@@ -94,6 +96,43 @@ public class RespuestaServicesImpl implements RespuestaService{
         usuarioActualizado.setEmail(usuario.getEmail());
         usuarioActualizado.setContraseña(usuario.getContraseña());
         usuarioActualizado.setTelefonos(usuario.getTelefonos());
+        usuarioRepository.save(usuarioActualizado);
+        return usuarioActualizado;
+    }
+    @Override
+    public Respuesta actualizarContraseña(Long id, Map<String, String> request) {
+        Optional<Respuesta> respuesta = Optional.of(new Respuesta());
+        Respuesta saveRespuesta = new Respuesta();
+        Optional<Usuario> usuarioRespuesta = Optional.of(new Usuario());
+        usuarioRespuesta = usuarioRepository.findById(id);
+        Usuario usuarioExistente = usuarioRespuesta.get();
+        respuesta = respuestaRepository.findById(usuarioExistente.getId());
+        String token = respuesta.map(Respuesta::getToken).orElse(null);
+        String activo = validarActivo(token, usuarioExistente);
+        if (activo.equals("Activo") ){
+            Usuario usuario1 = actualizarPasswordUsuario(request, usuarioExistente);
+            token = jwtUtil.generateToken(usuario1);
+            Respuesta respuestaExistente = respuesta.get();
+            respuestaExistente.setId(respuestaExistente.getId());
+            respuestaExistente.setCreado(respuestaExistente.getCreado());
+            respuestaExistente.setModificado(fechaModificacionUsuario());
+            respuestaExistente.setUltimoLogin(respuestaExistente.getUltimoLogin());
+            respuestaExistente.setToken(token);
+            respuestaExistente.setActivo(activo);
+            respuestaExistente.setSesion(respuestaExistente.getSesion());
+            saveRespuesta = respuestaRepository.save(respuestaExistente);
+        }
+        return saveRespuesta;
+    }
+
+    private Usuario actualizarPasswordUsuario(Map<String, String> request, Usuario usuarioExistente) {
+        Usuario usuarioActualizado = new Usuario();
+        String nuevaContraseña = request.get("contraseña");
+        usuarioActualizado.setId(usuarioExistente.getId());
+        usuarioActualizado.setNombre(usuarioExistente.getNombre());
+        usuarioActualizado.setEmail(usuarioExistente.getEmail());
+        usuarioActualizado.setContraseña(nuevaContraseña);
+        usuarioActualizado.setTelefonos(usuarioExistente.getTelefonos());
         usuarioRepository.save(usuarioActualizado);
         return usuarioActualizado;
     }

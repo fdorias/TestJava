@@ -7,6 +7,7 @@ import com.pruebaspring.prueba.services.RespuestaService;
 import com.pruebaspring.prueba.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/usuario")
@@ -48,6 +50,10 @@ public class UsuarioController {
     public Respuesta actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario){
         Respuesta respuesta = respuestaService.actualizarUsuario(usuario,id);
         return respuesta;
+    }
+    @PatchMapping("/actualizarContraseña/{id}")
+    public Respuesta updatePassword(@PathVariable Long id,@RequestBody Map<String, String> request) {
+        return respuestaService.actualizarContraseña(id, request);
     }
 
 
