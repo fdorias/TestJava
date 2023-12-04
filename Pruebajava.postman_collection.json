@@ -31,14 +31,32 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"Juan1Rodriguez\",\r\n    \"email\": \"juan1@iguez.com\",\r\n    \"contraseña\": \"hunter21\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"nombre\": \"Juan Rodriguez\",\r\n    \"email\": \"juan1@iguez.com\",\r\n    \"contraseña\": \"123456\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"1234567\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "http://localhost:8080/api/usuario/actualizarUsuario/2"
+				"url": "http://localhost:8080/api/usuario/actualizarUsuario/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Contraseña",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contraseña\": \"ContraseñaNueva\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/usuario/actualizarContraseña/1"
 			},
 			"response": []
 		},
