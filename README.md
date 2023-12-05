@@ -44,3 +44,7 @@ pruebas para que dure 3 y 5 minutos dependiendo del usuario que realice la prueb
 
 6.- Eliminar Usuario
     Para eliminar usuario solamente necesitara el id del usuario en el endpoint para poder asi eliminarlo
+
+Diagrama de solucion
+
+![img.png](img.png)
